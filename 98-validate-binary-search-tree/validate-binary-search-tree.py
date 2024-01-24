@@ -10,10 +10,7 @@ class Solution:
         def isValid(node, lb, ub):
             if node:
                 if lb<= node.val <= ub:
-                    if not isValid(node.left, lb, node.val-1):
-                        return False
-                    if not isValid(node.right, node.val + 1, ub):
-                        return False
+                    return  isValid(node.left, lb, node.val-1) and isValid(node.right, node.val + 1, ub)
                 else:
                     return False
             return True
