@@ -1,14 +1,27 @@
 class Solution:
-  def maxSatisfied(self, customers: List[int], grumpy: List[int], X: int) -> int:
-    satisfied = sum(c for i, c in enumerate(customers) if grumpy[i] == 0)
-    madeSatisfied = 0
-    windowSatisfied = 0
+    def maxSatisfied(self, customers: List[int], grumpy: List[int], minutes: int) -> int:
+        n = len(customers)
 
-    for i, customer in enumerate(customers):
-      if grumpy[i] == 1:
-        windowSatisfied += customer
-      if i >= X and grumpy[i - X] == 1:
-        windowSatisfied -= customers[i - X]
-      madeSatisfied = max(madeSatisfied, windowSatisfied)
+        satisfiedCustomers = 0
+        maxTechniqueBenefit = 0
 
-    return satisfied + madeSatisfied
+        techniqueOnInd = 0
+        techniqueBenefit = 0
+
+        for i in range(n):
+            if grumpy[i] == 0:
+                satisfiedCustomers += customers[i]
+            else:
+                if i >= techniqueOnInd + minutes:
+                    maxTechniqueBenefit = max(maxTechniqueBenefit, techniqueBenefit)
+                    
+                    while i >= techniqueOnInd + minutes :
+                        if grumpy[techniqueOnInd] == 1:
+                            techniqueBenefit -= customers[techniqueOnInd]
+                        techniqueOnInd += 1
+                
+                techniqueBenefit += customers[i]
+
+
+        maxTechniqueBenefit = max(maxTechniqueBenefit, techniqueBenefit)
+        return satisfiedCustomers + maxTechniqueBenefit
