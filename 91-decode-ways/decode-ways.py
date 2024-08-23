@@ -1,24 +1,20 @@
 class Solution:
     def numDecodings(self, s: str) -> int:
         n = len(s)
-        array = [-1]*100
-        def solve(i):
-            if i >= n:
-                return 1
-            elif s[i] == '0':
-                return 0
-            elif array[i] != -1:
-                return array[i]
-            
-            temp = solve(i+1)
-
-            if i+1 < n and 0 < int(s[i: i+2]) < 27:
-                temp += solve(i+2)
-
-            array[i] = temp
-            return temp
+        a1, a2 = 1, 1
+        if s[-1] == '0':
+            a1 = 0
         
-        return solve(0)
+        for i in range(n-2, -1,-1):
+            curr = 0
+            if s[i] != '0':
+                curr = a1
+                if 0 < int(s[i: i+2]) < 27:
+                    curr += a2
+            a1, a2 = curr, a1
+        
+        return a1
+                
         
 
             
