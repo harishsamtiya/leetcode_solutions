@@ -5,34 +5,27 @@ class Solution:
         if n%groupSize:
             return False
         
-        
-        mydict = defaultdict(int)
-        pq = []
-        for num in hand:
-            if num not in mydict:
-                pq.append(num)
-            mydict[num] += 1
+        if groupSize == 1:
+            return True
 
-        heapify(pq)
+        hand.sort()
+        de = deque()
 
-        while mydict:
-            num = heappop(pq)
-            
-            while mydict[num] == 0 and pq:
-                num = heappop(pq)
-
-            count = mydict[num]
-            del mydict[num]
-            if not pq and count == 0:
-                break
-            for card in range(num+1, num + groupSize):
-                if card not in mydict or mydict[card] < count:
+        for val in hand:
+            if de:
+                topCard, count = de.popleft()
+                if topCard + 1 == val:
+                    if count + 1 < groupSize:
+                        de.append((val, count+1)) 
+                elif topCard == val:
+                    de.appendleft((topCard, count)) 
+                    de.appendleft((val, 1))
+                else:
                     return False
-                
-                mydict[card] -= count
+            else:
+                de.append((val, 1))
 
 
-
-
-        return True   
-            
+        if de:
+            return False
+        return True
