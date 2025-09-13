@@ -27,20 +27,16 @@ class UnionFind:
 
 class Solution:
     def makeConnected(self, n: int, connections: List[List[int]]) -> int:
-        notNeededConnections = 0
+        if len(connections) < n-1:
+            return -1
         dsu = UnionFind(n)
 
         for x, y in connections:
-            if not dsu.union(x, y):
-                notNeededConnections += 1
-        
+            dsu.union(x, y)
 
         myset = set()
         for i in range(n):
             rootI = dsu.find(i)
             myset.add(rootI)
         
-        connectionsNeeded = len(myset)-1
-        if connectionsNeeded > notNeededConnections:
-            return -1
-        return connectionsNeeded
+        return len(myset)-1
