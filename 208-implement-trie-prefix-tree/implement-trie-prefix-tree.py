@@ -1,48 +1,47 @@
-class Trie:
-    
+class TrieNode:
     def __init__(self):
-        self.chars = [(False, None)]*26
+        self.children = dict()
+        self.is_end = False
+
+class Trie:
+
+    def __init__(self):
+        self.root = TrieNode()
 
     def insert(self, word: str) -> None:
-        n = len(word)
-        temp = self.chars
-        for i in range(n-1):
-            ind = ord(word[i]) - 97
+        node = self.root
 
-            if temp[ind][1] == None:
-                temp[ind] = (temp[ind][0], [(False, None)]*26)
-            temp = temp[ind][1]
-        
-        ind = ord(word[n-1]) - 97
-        temp[ind] = (True, temp[ind][1])
-
+        for ch in word:
+            if ch not in node.children:
+                newNode = TrieNode()
+            else:
+                newNode = node.children[ch]
+            node.children[ch] = newNode
+            node = newNode
+        node.is_end = True
 
     def search(self, word: str) -> bool:
-        n = len(word)
-        temp = self.chars
-        for i in range(n-1):
-            ind = ord(word[i]) - 97
+        node = self.root
 
-            if temp[ind][1] == None:
+        for ch in word:
+            if ch not in node.children:
                 return False
-            temp = temp[ind][1]
+            node = node.children[ch]
         
-        ind = ord(word[n-1]) - 97
-        return temp[ind][0]
-
+        if node.is_end:
+            return True
+        return False
 
     def startsWith(self, prefix: str) -> bool:
-        n = len(prefix)
-        temp = self.chars
-        for i in range(n-1):
-            ind = ord(prefix[i]) - 97
+        node = self.root
 
-            if temp[ind][1] == None:
+        for ch in prefix:
+            if ch not in node.children:
                 return False
-            temp = temp[ind][1]
-        ind = ord(prefix[n-1]) - 97
+            node = node.children[ch]
+        
+        return True
 
-        return temp[ind][0] or temp[ind][1]
 
 # Your Trie object will be instantiated and called as such:
 # obj = Trie()
