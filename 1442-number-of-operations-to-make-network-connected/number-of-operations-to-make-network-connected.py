@@ -1,6 +1,7 @@
 class UnionFind:
     def __init__(self, n):
         self.parent = [i for i in range(n)]
+        self.rank = [1 for i in range(n)]
 
     def find(self, x):
         while x != self.parent[x]:
@@ -11,10 +12,16 @@ class UnionFind:
         rootX = self.find(x)
         rootY = self.find(y)
 
-        if rootX != rootY:
-            self.parent[rootY] = self.parent[rootX]
-            return True
-        return False
+        if rootX == rootY:
+            return False
+
+        if self.rank[rootX] > self.rank[rootY]:
+            self.parent[rootY] = rootX
+        elif self.rank[rootY] > self.rank[rootX]:
+            self.parent[rootX] = rootY
+        else:
+            self.parent[rootY] = rootX
+            self.rank[rootX] += 1
 
     def isConnected(self, x, y):
         rootX = self.find(x)
