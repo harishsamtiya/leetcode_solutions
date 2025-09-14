@@ -1,31 +1,24 @@
 class Solution:
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
-        
-        graph = [[] for _ in range(numCourses)]
-        dependedCourses = [0]*numCourses
-        for second, first in prerequisites:
-            graph[first].append(second)
-            dependedCourses[second] += 1
-        
-        count = 0
-        for val in dependedCourses:
-            if val == 0:
-                count += 1
+        degree = defaultdict(int)
+        graph = defaultdict(list)
 
-        while count < numCourses:
-            flag = True
-            for i in range(numCourses):
-                if dependedCourses[i] == 0:
-                    dependedCourses[i] = -1
-                    flag = False
-                    for course in graph[i]:
-                        dependedCourses[course] -= 1
-                        if dependedCourses[course] == 0:
-                            count += 1 
-            if flag:
-                return False
-        return True
+        for v, u in prerequisites:
+            degree[v] += 1
+            graph[u].append(v)
         
-        
+        queue = deque([course for course in range(numCourses) if degree[course] == 0])
+        canCompleteCourse = 0
 
-            
+        while queue:
+            course = queue.popleft()
+            canCompleteCourse += 1
+
+            for newCourse in graph[course]:
+                degree[newCourse] -= 1
+                if degree[newCourse] == 0:
+                    queue.append(newCourse)
+
+        if canCompleteCourse == numCourses:
+            return True
+        return False
