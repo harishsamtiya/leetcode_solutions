@@ -1,28 +1,20 @@
 class Solution:
     def maxFrequencyElements(self, nums: List[int]) -> int:
-        nums.sort()
-        
-        max_freq = 0
-        count = 0
-        prev = 0
-        freq = 0
+        numCount = dict()
+
         for num in nums:
-            if num == prev:
-                freq += 1
+            if num in numCount:
+                numCount[num] += 1
             else:
-                if freq == max_freq:
-                    count += freq
-                elif freq > max_freq:
-                    max_freq = freq
-                    count = freq
-                prev = num
-                freq = 1
- 
-        if freq == max_freq:
-            count += freq
-        elif freq > max_freq:
-            max_freq = freq
-            count = freq
-        return count
-            
-                    
+                numCount[num] = 1
+        
+        maxFreq = 0
+        result = 0
+        for freq in numCount.values():
+
+            if maxFreq < freq:
+                maxFreq = freq
+                result = 0
+            if maxFreq == freq:
+                result += freq
+        return result
