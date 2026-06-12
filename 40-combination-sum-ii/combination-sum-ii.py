@@ -1,31 +1,40 @@
 class Solution:
     def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
-        n = len(candidates)
         candidates.sort()
+        n = len(candidates)
         result = []
 
-        while n >= 0 and candidates[n-1] > target:
-            n -= 1
+        def find_next_ind(ind):
+            if ind >= n-1:
+                return float('inf')
+            next_ind = ind
+            for i in range(ind+1, n):
+                if candidates[i] == candidates[ind]:
+                    next_ind = i
+                else:
+                    break
+            next_ind += 1
+            if next_ind >= n:
+                return float('inf')
+            return next_ind
 
+        def solve(li, ind, summ):
+            if summ <= target:
+                if ind == n:
+                    if summ == target:
+                        result.append(li.copy())
+                else:
+                    next_ind = find_next_ind(ind)
+                    solve(li, min(next_ind, n), summ)
+                    
+                    for i in range(ind, min(next_ind, n)):
+                        summ += candidates[i]
+                        li.append(candidates[i])
+                        solve(li, min(next_ind, n), summ)
+                    
+                    for i in range(ind, min(next_ind, n)):
+                        summ -= candidates[i]
+                        li.pop()
 
-        def backtrack(ind, summ, li):
-            if ind >= n or summ >target:
-                if summ == target:
-                    result.append(li.copy())
-                return
-            
-            li.append(candidates[ind])
-            summ += candidates[ind]
-            backtrack(ind+1, summ, li)
-
-            li.pop()
-            summ -= candidates[ind]
-            while ind + 1 < n and candidates[ind] == candidates[ind+1]:
-                ind += 1
-            
-            backtrack(ind+1, summ, li)
-
-        backtrack(0, 0, [])
+        solve([], 0, 0)
         return result
-
-            
