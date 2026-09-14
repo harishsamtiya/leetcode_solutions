@@ -1,40 +1,29 @@
 class Solution:
     def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
-        candidates.sort()
+        my_ans = []
+
+        candidates_dict = dict()
+        for candidate in candidates:
+            if candidate in candidates_dict:
+                candidates_dict[candidate] += 1
+            else:
+                candidates_dict[candidate] = 1
+        
+        candidates = [(val, cnt) for val, cnt in candidates_dict.items()]
         n = len(candidates)
-        result = []
+        candidates.sort(key=lambda x: x[0])
+        def solve(i, arr, summ):
+            if target == summ:
+                my_ans.append(arr)
+            if i < n and summ < target:
+                
+                val, cnt = candidates[i]
+                solve(i+1, arr, summ)
 
-        def find_next_ind(ind):
-            if ind >= n-1:
-                return float('inf')
-            next_ind = ind
-            for i in range(ind+1, n):
-                if candidates[i] == candidates[ind]:
-                    next_ind = i
-                else:
-                    break
-            next_ind += 1
-            if next_ind >= n:
-                return float('inf')
-            return next_ind
+                for c in range(1, cnt+1):
+                    solve(i+1, arr + [val]*c, summ+(val*c))
+        
+        solve(0, [], 0)
+        return my_ans
+                        
 
-        def solve(li, ind, summ):
-            if summ <= target:
-                if ind == n:
-                    if summ == target:
-                        result.append(li.copy())
-                else:
-                    next_ind = find_next_ind(ind)
-                    solve(li, min(next_ind, n), summ)
-                    
-                    for i in range(ind, min(next_ind, n)):
-                        summ += candidates[i]
-                        li.append(candidates[i])
-                        solve(li, min(next_ind, n), summ)
-                    
-                    for i in range(ind, min(next_ind, n)):
-                        summ -= candidates[i]
-                        li.pop()
-
-        solve([], 0, 0)
-        return result
